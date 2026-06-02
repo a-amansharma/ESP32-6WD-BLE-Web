@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>ESP32 6WD BLE Controller</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: radial-gradient(circle at top, #1f2937, #020617);
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 420px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-bottom: 4px;
+    }
+
+    .sub {
+      font-size: 14px;
+      opacity: 0.75;
+      margin-bottom: 18px;
+    }
+
+    .status {
+      margin: 12px auto 18px;
+      padding: 10px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.08);
+      font-size: 14px;
+    }
+
+    .connect {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 18px;
+      background: linear-gradient(145deg, #22c55e, #15803d);
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+      margin-bottom: 22px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .btn {
+      height: 82px;
+      border: none;
+      border-radius: 24px;
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+      background: linear-gradient(145deg, #334155, #0f172a);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.45), inset 0 2px 3px rgba(255,255,255,0.15);
+    }
+
+    .btn:active {
+      transform: scale(0.95);
+      background: linear-gradient(145deg, #475569, #1e293b);
+    }
+
+    .stop {
+      background: linear-gradient(145deg, #ef4444, #991b1b);
+      font-size: 20px;
+    }
+
+    .speedBox {
+      margin-top: 24px;
+      background: rgba(255,255,255,0.08);
+      padding: 16px;
+      border-radius: 20px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .speedValue {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .smallBtns {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .smallBtns button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 15px;
+      background: #1e293b;
+      color: white;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <h1>ESP32 6WD</h1>
+    <div class="sub">BLE Web Controller</div>
+
+    <div class="status" id="status">Not Connected</div>
+
+    <button class="connect" onclick="connectBLE()">Connect BLE</button>
+
+    <div class="grid">
+      <div></div>
+      <button class="btn" ontouchstart="sendCommand('F')" onmousedown="sendCommand('F')" ontouchend="sendCommand('S')" onmouseup="sendCommand('S')">▲</button>
+      <div></div>
+
+      <button class="btn" ontouchstart="sendCommand('L')" onmousedown="sendCommand('L')" ontouchend="sendCommand('S')" onmouseup="sendCommand('S')">◀</button>
+      <button class="btn stop" onclick="sendCommand('S')">STOP</button>
+      <button class="btn" ontouchstart="sendCommand('R')" onmousedown="sendCommand('R')" ontouchend="sendCommand('S')" onmouseup="sendCommand('S')">▶</button>
+
+      <div></div>
+      <button class="btn" ontouchstart="sendCommand('B')" onmousedown="sendCommand('B')" ontouchend="sendCommand('S')" onmouseup="sendCommand('S')">▼</button>
+      <div></div>
+    </div>
+
+    <div class="speedBox">
+      <div>Speed Limit</div>
+      <input type="range" min="0" max="255" value="255" id="speedSlider" oninput="updateSpeed(this.value)" />
+      <div class="speedValue" id="speedValue">255</div>
+
+      <div class="smallBtns">
+        <button onclick="setSpeed(100)">100</button>
+        <button onclick="setSpeed(180)">180</button>
+        <button onclick="setSpeed(255)">255</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let device;
+    let server;
+    let service;
+    let rxCharacteristic;
+
+    const SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
+    const RX_UUID = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
+
+    const statusBox = document.getElementById("status");
+
+    async function connectBLE() {
+      try {
+        statusBox.innerText = "Searching...";
+
+        device = await navigator.bluetooth.requestDevice({
+          filters: [{ namePrefix: "ESP32_6WD" }],
+          optionalServices: [SERVICE_UUID]
+        });
+
+        device.addEventListener("gattserverdisconnected", onDisconnected);
+
+        statusBox.innerText = "Connecting...";
+
+        server = await device.gatt.connect();
+        service = await server.getPrimaryService(SERVICE_UUID);
+        rxCharacteristic = await service.getCharacteristic(RX_UUID);
+
+        statusBox.innerText = "Connected: " + device.name;
+
+        await sendCommand("S");
+        await sendCommand("V255");
+
+      } catch (error) {
+        statusBox.innerText = "Error: " + error.message;
+      }
+    }
+
+    function onDisconnected() {
+      statusBox.innerText = "Disconnected";
+      rxCharacteristic = null;
+    }
+
+    async function sendCommand(cmd) {
+      if (!rxCharacteristic) {
+        statusBox.innerText = "Connect BLE first";
+        return;
+      }
+
+      try {
+        const encoder = new TextEncoder();
+        await rxCharacteristic.writeValue(encoder.encode(cmd));
+        statusBox.innerText = "Sent: " + cmd;
+      } catch (error) {
+        statusBox.innerText = "Send failed: " + error.message;
+      }
+    }
+
+    function updateSpeed(value) {
+      document.getElementById("speedValue").innerText = value;
+      sendCommand("V" + value);
+    }
+
+    function setSpeed(value) {
+      document.getElementById("speedSlider").value = value;
+      document.getElementById("speedValue").innerText = value;
+      sendCommand("V" + value);
+    }
+
+    document.addEventListener("contextmenu", e => e.preventDefault());
+  </script>
+</body>
+</html>
