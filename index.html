@@ -15,10 +15,13 @@
 
     body {
       margin: 0;
-      height: 100vh;
-      background: radial-gradient(circle at top, #1f2937, #020617);
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(34, 211, 238, 0.25), transparent 28%),
+        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.25), transparent 30%),
+        linear-gradient(160deg, #020617, #0f172a 55%, #020617);
       color: white;
-      font-family: Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -27,41 +30,96 @@
 
     .app {
       width: 100%;
-      max-width: 420px;
-      padding: 20px;
+      max-width: 430px;
+      padding: 18px;
       text-align: center;
     }
 
+    .glass {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    }
+
+    .header {
+      border-radius: 28px;
+      padding: 18px 16px;
+      margin-bottom: 14px;
+    }
+
+    .btIcon {
+      font-size: 42px;
+      filter: drop-shadow(0 0 14px rgba(56,189,248,0.9));
+    }
+
     h1 {
-      font-size: 26px;
-      margin-bottom: 4px;
+      margin: 5px 0 2px;
+      font-size: 28px;
+      letter-spacing: 0.5px;
     }
 
     .sub {
-      font-size: 14px;
+      font-size: 13px;
       opacity: 0.75;
-      margin-bottom: 18px;
-    }
-
-    .status {
-      margin: 12px auto 18px;
-      padding: 10px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.08);
-      font-size: 14px;
     }
 
     .connect {
       width: 100%;
       padding: 15px;
       border: none;
-      border-radius: 18px;
-      background: linear-gradient(145deg, #22c55e, #15803d);
+      border-radius: 20px;
+      background: linear-gradient(145deg, #38bdf8, #2563eb);
       color: white;
       font-size: 18px;
-      font-weight: bold;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.35);
-      margin-bottom: 22px;
+      font-weight: 800;
+      box-shadow:
+        0 12px 25px rgba(37,99,235,0.35),
+        inset 0 2px 4px rgba(255,255,255,0.28);
+      margin: 14px 0;
+    }
+
+    .connect:active {
+      transform: scale(0.97);
+    }
+
+    .terminal {
+      text-align: left;
+      height: 126px;
+      overflow: hidden;
+      border-radius: 18px;
+      padding: 12px;
+      margin-bottom: 16px;
+      background: rgba(3, 7, 18, 0.82);
+      border: 1px solid rgba(34, 211, 238, 0.25);
+      box-shadow:
+        inset 0 0 22px rgba(34,211,238,0.08),
+        0 10px 30px rgba(0,0,0,0.35);
+      font-family: "SF Mono", "Menlo", "Monaco", "Courier New", monospace;
+      font-size: 12px;
+      color: #67e8f9;
+      line-height: 1.45;
+    }
+
+    .terminalTop {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ef4444;
+    }
+
+    .dot:nth-child(2) { background: #f59e0b; }
+    .dot:nth-child(3) { background: #22c55e; }
+
+    #terminalText {
+      white-space: pre-line;
     }
 
     .grid {
@@ -69,97 +127,115 @@
       grid-template-columns: 1fr 1fr 1fr;
       gap: 14px;
       align-items: center;
+      margin-bottom: 16px;
     }
 
     .btn {
-      height: 82px;
+      height: 78px;
       border: none;
-      border-radius: 24px;
+      border-radius: 25px;
       color: white;
-      font-size: 22px;
-      font-weight: bold;
-      background: linear-gradient(145deg, #334155, #0f172a);
-      box-shadow: 0 8px 18px rgba(0,0,0,0.45), inset 0 2px 3px rgba(255,255,255,0.15);
+      font-size: 28px;
+      font-weight: 900;
+      background: linear-gradient(145deg, rgba(71,85,105,0.95), rgba(15,23,42,0.95));
+      box-shadow:
+        0 12px 26px rgba(0,0,0,0.46),
+        inset 0 3px 4px rgba(255,255,255,0.18),
+        inset 0 -4px 8px rgba(0,0,0,0.28);
     }
 
     .btn:active {
-      transform: scale(0.95);
-      background: linear-gradient(145deg, #475569, #1e293b);
+      transform: scale(0.94);
+      background: linear-gradient(145deg, #64748b, #1e293b);
     }
 
     .stop {
-      background: linear-gradient(145deg, #ef4444, #991b1b);
+      background: linear-gradient(145deg, #fb7185, #b91c1c);
       font-size: 20px;
     }
 
     .speedBox {
-      margin-top: 24px;
-      background: rgba(255,255,255,0.08);
+      border-radius: 24px;
       padding: 16px;
-      border-radius: 20px;
     }
 
-    input[type="range"] {
-      width: 100%;
+    .speedTitle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      margin-bottom: 10px;
     }
 
     .speedValue {
       font-size: 22px;
-      font-weight: bold;
-      margin-top: 8px;
+      color: #67e8f9;
+      font-family: "SF Mono", "Menlo", monospace;
     }
 
-    .smallBtns {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .smallBtns button {
-      flex: 1;
-      padding: 12px;
-      border: none;
-      border-radius: 15px;
-      background: #1e293b;
-      color: white;
-      font-weight: bold;
+    input[type="range"] {
+      width: 100%;
+      accent-color: #38bdf8;
     }
   </style>
 </head>
 
 <body>
   <div class="app">
-    <h1>ESP32 6WD</h1>
-    <div class="sub">BLE Web Controller</div>
+    <div class="header glass">
+      <div class="btIcon">ᛒ</div>
+      <h1>ESP32 6WD</h1>
+      <div class="sub">Bluetooth Low Energy Web Controller</div>
+    </div>
 
-    <div class="status" id="status">Not Connected</div>
+    <button class="connect" onclick="connectBLE()">Connect Bluetooth</button>
 
-    <button class="connect" onclick="connectBLE()">Connect BLE</button>
+    <div class="terminal">
+      <div class="terminalTop">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      <div id="terminalText">aman@esp32-6wd:~$ BLE terminal ready
+> waiting for Bluetooth connection...</div>
+    </div>
 
     <div class="grid">
       <div></div>
-      <button class="btn" ontouchstart="sendCommand('F')" onmousedown="sendCommand('F')" ontouchend="sendCommand('S')" onmouseup="sendCommand('S')">▲</button>
+      <button class="btn"
+        ontouchstart="moveCmd('B','FORWARD')"
+        onmousedown="moveCmd('B','FORWARD')"
+        ontouchend="stopCmd()"
+        onmouseup="stopCmd()">▲</button>
       <div></div>
 
-      <button class="btn" ontouchstart="sendCommand('L')" onmousedown="sendCommand('L')" ontouchend="sendCommand('S')" onmouseup="sendCommand('S')">◀</button>
-      <button class="btn stop" onclick="sendCommand('S')">STOP</button>
-      <button class="btn" ontouchstart="sendCommand('R')" onmousedown="sendCommand('R')" ontouchend="sendCommand('S')" onmouseup="sendCommand('S')">▶</button>
+      <button class="btn"
+        ontouchstart="moveCmd('R','LEFT')"
+        onmousedown="moveCmd('R','LEFT')"
+        ontouchend="stopCmd()"
+        onmouseup="stopCmd()">◀</button>
+
+      <button class="btn stop" onclick="stopCmd()">STOP</button>
+
+      <button class="btn"
+        ontouchstart="moveCmd('L','RIGHT')"
+        onmousedown="moveCmd('L','RIGHT')"
+        ontouchend="stopCmd()"
+        onmouseup="stopCmd()">▶</button>
 
       <div></div>
-      <button class="btn" ontouchstart="sendCommand('B')" onmousedown="sendCommand('B')" ontouchend="sendCommand('S')" onmouseup="sendCommand('S')">▼</button>
+      <button class="btn"
+        ontouchstart="moveCmd('F','BACKWARD')"
+        onmousedown="moveCmd('F','BACKWARD')"
+        ontouchend="stopCmd()"
+        onmouseup="stopCmd()">▼</button>
       <div></div>
     </div>
 
-    <div class="speedBox">
-      <div>Speed Limit</div>
-      <input type="range" min="0" max="255" value="255" id="speedSlider" oninput="updateSpeed(this.value)" />
-      <div class="speedValue" id="speedValue">255</div>
-
-      <div class="smallBtns">
-        <button onclick="setSpeed(100)">100</button>
-        <button onclick="setSpeed(180)">180</button>
-        <button onclick="setSpeed(255)">255</button>
+    <div class="speedBox glass">
+      <div class="speedTitle">
+        <span>Speed Lever</span>
+        <span class="speedValue" id="speedValue">255</span>
       </div>
+      <input type="range" min="0" max="255" value="255" id="speedSlider" oninput="updateSpeed(this.value)" />
     </div>
   </div>
 
@@ -172,11 +248,18 @@
     const SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
     const RX_UUID = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
 
-    const statusBox = document.getElementById("status");
+    const terminal = document.getElementById("terminalText");
+
+    function logLine(text) {
+      const time = new Date().toLocaleTimeString();
+      terminal.innerText += `\n[${time}] ${text}`;
+      const lines = terminal.innerText.split("\n");
+      if (lines.length > 7) terminal.innerText = lines.slice(lines.length - 7).join("\n");
+    }
 
     async function connectBLE() {
       try {
-        statusBox.innerText = "Searching...";
+        logLine("scanning BLE devices...");
 
         device = await navigator.bluetooth.requestDevice({
           filters: [{ namePrefix: "ESP32_6WD" }],
@@ -185,51 +268,54 @@
 
         device.addEventListener("gattserverdisconnected", onDisconnected);
 
-        statusBox.innerText = "Connecting...";
-
+        logLine("connecting to " + device.name + "...");
         server = await device.gatt.connect();
+
+        logLine("opening Nordic UART service...");
         service = await server.getPrimaryService(SERVICE_UUID);
         rxCharacteristic = await service.getCharacteristic(RX_UUID);
 
-        statusBox.innerText = "Connected: " + device.name;
+        logLine("connected via Bluetooth ✅");
 
-        await sendCommand("S");
-        await sendCommand("V255");
+        await sendCommand("S", "safety stop");
+        await sendCommand("V255", "speed set 255");
 
       } catch (error) {
-        statusBox.innerText = "Error: " + error.message;
+        logLine("ERROR: " + error.message);
       }
     }
 
     function onDisconnected() {
-      statusBox.innerText = "Disconnected";
       rxCharacteristic = null;
+      logLine("Bluetooth disconnected");
     }
 
-    async function sendCommand(cmd) {
+    async function sendCommand(cmd, label = "") {
       if (!rxCharacteristic) {
-        statusBox.innerText = "Connect BLE first";
+        logLine("connect Bluetooth first");
         return;
       }
 
       try {
         const encoder = new TextEncoder();
         await rxCharacteristic.writeValue(encoder.encode(cmd));
-        statusBox.innerText = "Sent: " + cmd;
+        logLine(`TX via BLE -> ${cmd}${label ? " / " + label : ""}`);
       } catch (error) {
-        statusBox.innerText = "Send failed: " + error.message;
+        logLine("send failed: " + error.message);
       }
+    }
+
+    function moveCmd(cmd, label) {
+      sendCommand(cmd, label);
+    }
+
+    function stopCmd() {
+      sendCommand("S", "STOP");
     }
 
     function updateSpeed(value) {
       document.getElementById("speedValue").innerText = value;
-      sendCommand("V" + value);
-    }
-
-    function setSpeed(value) {
-      document.getElementById("speedSlider").value = value;
-      document.getElementById("speedValue").innerText = value;
-      sendCommand("V" + value);
+      sendCommand("V" + value, "speed lever");
     }
 
     document.addEventListener("contextmenu", e => e.preventDefault());
